@@ -343,12 +343,12 @@ header.nav{position:sticky;top:0;z-index:40;pointer-events:none}
 .pack{border-radius:var(--r);background:var(--blue-06);border:1px solid var(--blue-12);padding:2rem;display:flex;flex-direction:column;gap:.9rem;position:relative}
 .pack.best{background:var(--blue);color:var(--mist);border-color:var(--blue)}
 .pack .ribbon{position:absolute;top:1.2rem;right:1.2rem;font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border:1px solid currentColor;border-radius:var(--pill);padding:.35rem .7rem;opacity:.85}
-.pack .imgs{display:flex;gap:.5rem;height:120px;align-items:end}
-.pack .imgs img{height:100%;object-fit:contain;filter:drop-shadow(0 16px 20px rgba(0,62,81,.3))}
+.pack .imgs{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:.5rem;height:120px;align-items:end;width:100%;overflow:hidden}
+.pack .imgs img{height:100%;width:100%;max-width:100%;object-fit:contain;object-position:bottom;filter:drop-shadow(0 16px 20px rgba(0,62,81,.3))}
 .pack h3{font-size:2.2rem}
 .pack .who{opacity:.8;font-size:1rem;min-height:2.8em}
 .pack .items{font-size:.9rem;opacity:.7}
-.pack .pr{display:flex;align-items:baseline;gap:.6rem;margin-top:auto}
+.pack .pr{display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem .6rem;margin-top:auto}
 .pack .pr b{font-size:1.9rem;font-variant-numeric:tabular-nums;font-weight:500}
 .pack .pr s,.pack .pr small{opacity:.65;font-size:.9rem}
 .pack.best .btn-primary{background:var(--mist);color:var(--blue)}
@@ -362,7 +362,7 @@ header.nav{position:sticky;top:0;z-index:40;pointer-events:none}
 footer{background:var(--blue);color:var(--mist);padding:4rem 0 2rem;font-size:.92rem}
 footer .brand{background:var(--mist)}
 footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2.5rem}
-@media (max-width:760px){footer .cols{grid-template-columns:1fr 1fr}}
+@media (max-width:760px){footer .cols{grid-template-columns:1fr 1fr}footer .cols>div{min-width:0}footer ul a{display:inline-block;max-width:100%;overflow-wrap:anywhere}}
 footer ul{list-style:none;padding:0;margin:.8rem 0 0;display:grid;gap:.5rem}
 footer a{text-decoration:none;opacity:.8}
 footer a:hover{opacity:1}
