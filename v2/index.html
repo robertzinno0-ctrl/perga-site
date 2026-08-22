@@ -130,7 +130,7 @@ header.nav{position:sticky;top:0;z-index:50;background:rgba(225,234,233,.86);bac
 .rcard .t{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;opacity:.7}
 .rcard h3{margin:.3rem 0 .8rem}
 .rcard .imgs{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
-.rcard .imgs img{aspect-ratio:1;object-fit:contain;background:rgba(225,234,233,.08);border-radius:12px;padding:.4rem}
+.rcard .imgs img{aspect-ratio:4/3;object-fit:cover;border-radius:12px}
 .rcard .items{font-size:.95rem;margin-top:.6rem}
 .tip{margin-top:1.6rem;border-radius:var(--rs);padding:1rem 1.2rem;background:var(--peach);color:var(--blue);font-size:.95rem;max-width:none}
 /* protocols */
@@ -497,8 +497,8 @@ pages.home=()=>`
 <section class="on-blue"><div class="wrap"><div class="sec-head"><span class="eyebrow">How Core4 works together</span><h2>Four products. One foundational system.</h2><p class="lead">Not four disconnected supplements — one integrated daily routine. Gut first in the morning, then fuel; clean-up and recovery at night.</p></div>
   <div class="grid g2" style="align-items:center;margin-bottom:1.2rem">${video('bodyvideo','tall','bodyposter')}<div><h3 style="font-size:1.6rem">Follow the tablets.</h3><p class="lead" style="margin-top:.6rem">CoreFlow works in the gut. CoreBlue in every cell's energy machinery. CoreGreen through the clearing pathways. CoreRed in joints and membranes.</p></div></div>
   <div class="routine">
-    <div class="rcard"><div class="t">Morning · with breakfast</div><h3>CoreFlow + CoreBlue</h3><div class="imgs"><img src="${IMGS['cut-coreflow']}" alt="" loading="lazy"><img src="${IMGS['cut-coreblue']}" alt="" loading="lazy"></div><div class="items">Feed the gut, then fuel the cell.</div></div>
-    <div class="rcard"><div class="t">Evening · with dinner</div><h3>CoreGreen + CoreRed</h3><div class="imgs"><img src="${IMGS['cut-coregreen']}" alt="" loading="lazy"><img src="${IMGS['cut-corered']}" alt="" loading="lazy"></div><div class="items">Clean up, then repair and recover.</div></div>
+    <div class="rcard"><div class="t">Morning · with breakfast</div><h3>CoreFlow + CoreBlue</h3><div class="imgs"><img src="${IMGS['coreflow-5']}" alt="CoreFlow" loading="lazy"><img src="${IMGS['core-blue-4']}" alt="CoreBlue" loading="lazy"></div><div class="items">Feed the gut, then fuel the cell.</div></div>
+    <div class="rcard"><div class="t">Evening · with dinner</div><h3>CoreGreen + CoreRed</h3><div class="imgs"><img src="${IMGS['core-green-6']}" alt="CoreGreen" loading="lazy"><img src="${IMGS['core-red-3']}" alt="CoreRed" loading="lazy"></div><div class="items">Clean up, then repair and recover.</div></div>
   </div>
   <p class="tip">Don't overcomplicate timing. Consistency matters most — if taking all four together fits your routine better, that works too.</p>
   <div style="margin-top:1.4rem"><a class="btn btn-ghost" href="#/how-it-works">See the full story →</a></div>
