@@ -111,9 +111,10 @@ section{padding:clamp(52px,6.5vw,88px) 0}
 @media(max-width:880px){.trust .wrap{grid-template-columns:1fr 1fr}}
 
 /* intro */
-.intro .wrap{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,96px);align-items:start}
-@media(max-width:880px){.intro .wrap{grid-template-columns:1fr}}
-.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:10px}
+.intro .wrap{display:flex;flex-direction:column;gap:clamp(28px,4vw,48px)}
+.intro-top{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,5vw,72px);align-items:start}
+@media(max-width:880px){.intro-top{grid-template-columns:1fr}}
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .pillar{background:#fff;border-radius:var(--r-s);padding:22px 18px;border:1px solid var(--line)}
 .pillar .k{font-family:var(--display);font-size:24px;color:var(--blue);margin-bottom:6px}
 .pillar .v{font-size:14px;color:var(--ink-3)}
@@ -123,7 +124,7 @@ section{padding:clamp(52px,6.5vw,88px) 0}
 .pillar .k{margin-bottom:0;flex:0 0 auto;min-width:74px;font-size:21px}
 .pillar .v{font-size:14px;line-height:1.4}
 }
-.etym{display:flex;flex-direction:column;gap:12px;padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.etym{display:flex;flex-direction:column;gap:10px;padding:20px 0 0;border-top:1px solid var(--line);margin-top:4px}
 .etym-line{font-size:clamp(16px,1.5vw,18px);line-height:1.6;color:var(--ink-2);max-width:52ch}
 .etym-line b{font-family:var(--display);font-weight:400;font-size:1.18em;color:var(--blue);white-space:nowrap}
 .etym-line i{font-style:normal;color:var(--teal)}
@@ -436,24 +437,26 @@ body.sub .subpage{display:block}
 <!-- INTRO -->
 <section class="intro on-white">
   <div class="wrap">
-    <div class="stack rv">
-      <span class="eyebrow">Why PERGA</span>
-      <h2>A Life-Changing Health Routine Built for Your Cells</h2>
-      <p class="lead">Whole-body health starts at the cellular level. PERGA was created to simplify biohacking through a foundational system that supports the gut, microbiome, cellular energy, detoxification, nutrient density, mobility, hydration, recovery, and healthy longevity.</p>
-      <div class="chips">
-        <span class="chip">Gut</span><span class="chip">Microbiome</span><span class="chip">Cellular energy</span><span class="chip">Detoxification</span><span class="chip">Nutrient density</span><span class="chip">Mobility</span><span class="chip">Hydration</span><span class="chip">Recovery</span><span class="chip">Healthy longevity</span>
+    <div class="intro-top">
+      <div class="stack rv">
+        <span class="eyebrow">Why PERGA</span>
+        <h2>A Life-Changing Health Routine Built for Your Cells</h2>
+        <div class="etym">
+          <p class="etym-line">PERGA blends <b>*Purg&#224;re</b> <i>&#8212; to cleanse and renew</i> with <b>*Per&#242;</b> <i>&#8212; to go forward</i>.</p>
+          <p class="etym-motto">Cleanse. Renew. Go Forward.</p>
+        </div>
+      </div>
+      <div class="stack rv d2">
+        <p class="lead">Whole-body health starts at the cellular level. PERGA was created to simplify biohacking through a foundational system that supports the gut, microbiome, cellular energy, detoxification, nutrient density, mobility, hydration, recovery, and healthy longevity.</p>
+        <div class="chips">
+          <span class="chip">Gut</span><span class="chip">Microbiome</span><span class="chip">Cellular energy</span><span class="chip">Detoxification</span><span class="chip">Nutrient density</span><span class="chip">Mobility</span><span class="chip">Hydration</span><span class="chip">Recovery</span><span class="chip">Healthy longevity</span>
+        </div>
       </div>
     </div>
-    <div class="stack rv d2">
-      <div class="etym">
-        <p class="etym-line">PERGA blends <b>*Purg&#224;re</b> <i>&#8212; to cleanse and renew</i> with <b>*Per&#242;</b> <i>&#8212; to go forward</i>.</p>
-        <p class="etym-motto">Cleanse. Renew. Go Forward.</p>
-      </div>
-      <div class="pillars">
-        <div class="pillar"><div class="k">4</div><div class="v">Foundational products, one simple system</div></div>
-        <div class="pillar"><div class="k">AM · PM</div><div class="v">Two in the morning, two at night</div></div>
-        <div class="pillar"><div class="k">90</div><div class="v">Days to let your body adapt</div></div>
-      </div>
+    <div class="pillars rv d2">
+      <div class="pillar"><div class="k">4</div><div class="v">Foundational products, one simple system</div></div>
+      <div class="pillar"><div class="k">AM &#183; PM</div><div class="v">Two in the morning, two at night</div></div>
+      <div class="pillar"><div class="k">90</div><div class="v">Days to let your body adapt</div></div>
     </div>
   </div>
 </section>
