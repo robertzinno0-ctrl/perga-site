@@ -288,6 +288,7 @@ footer p{max-width:90ch;line-height:1.6}
 .subpage .notice{margin-top:28px}
 body.sub>:not(.subpage):not(.ov):not(.panel-r):not(.cmp):not(.nav):not(.announce){display:none!important}
 body.sub .subpage{display:block}
+.linkbtn{background:none;border:0;padding:0;font:inherit;color:var(--teal);text-decoration:underline;cursor:pointer}
 /* sticky mobile */
 .sticky-cta{position:fixed;left:0;right:0;bottom:0;z-index:60;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(255,255,255,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);display:none;transform:translateY(110%);transition:transform .4s cubic-bezier(.2,.8,.2,1)}
 .sticky-cta.show{transform:none}
@@ -822,7 +823,7 @@ body.sub .subpage{display:block}
 
   const ov=document.getElementById('ov'),panel=document.getElementById('panel'),body=document.getElementById('body'),foot=document.getElementById('foot'),stepsEl=document.getElementById('steps');
   function open(sys){
-    if(sys){state.sys=sys;state.proto="F";state.step=sys==='core3'?1:2;}
+    if(sys){state.sys=sys;state.proto="F";state.step=(sys==='core3'||sys==='core4')?1:2;}
     else{state.step=0;}
     ov.classList.add('open');panel.classList.add('open');document.body.style.overflow='hidden';render();
   }
@@ -849,15 +850,21 @@ body.sub .subpage{display:block}
       [['core2','Core2','Two products · CoreBlue + CoreRed','$109'],['core3','Core3','Three of the four · choose which to leave out','From $129'],['core4','Core4','All four · recommended for most adults','$159']].forEach(o=>{
         const sel=(o[0]==='core3'?(state.sys||'').startsWith('core3'):state.sys===o[0]);
         const items=o[0]==='core3'?['flow','blue','green','red']:SYSTEMS[o[0]].items;
-        h+='<button class="opt'+(sel?' sel':'')+'" data-pick="'+o[0]+'"><span class="radio"></span><span class="ob"><b>'+o[1]+'</b><span>'+o[2]+'</span></span>'+prodImgs(items)+'<span class="op">'+o[3]+'<small>per month</small></span></button>';
+        h+='<button class="opt'+(sel?' sel':'')+'" data-pick="'+o[0]+'"><span class="radio"></span><span class="ob"><b>'+o[1]+'</b><span>'+o[2]+'</span></span>'+'<span class="op">'+o[3]+'<small>per month</small></span></button>';
       });
       h+='</div>';
       f='<button class="btn btn-primary" id="next" '+(state.sys?'':'disabled style="opacity:.5"')+'>Continue</button>';
     }
+    else if(state.step===1&&state.sys==='core4'){
+      h+='<h3>Your Core4 includes all four products</h3><p class="hint">Two in the morning. Two at night. Biohacking simplified.</p><div class="opts">';
+      SYSTEMS.core4.items.forEach(k=>{const P=PRODUCTS[k];h+='<div class="opt sel" style="cursor:default"><span class="radio"></span><span class="ob"><b>'+P.name+'</b><span>'+({flow:'AM · Gut and microbiome foundation',blue:'AM · Cellular energy and protection',green:'PM · Detoxification and nutrient density',red:'PM · Mobility, hydration, and recovery'})[k]+'</span></span><span class="op" style="font-size:14px;color:var(--teal)">Included</span></div>';});
+      h+='</div><p class="hint">Want only three? <button class="linkbtn" id="toCore3">Switch to Core3</button> and choose which product to leave out.</p>';
+      f='<button class="btn btn-ghost back" id="back">Back</button><button class="btn btn-primary" id="next">Continue</button>';
+    }
     else if(state.step===1){
       h+='<h3>Which product would you like to leave out?</h3><p class="hint">Every Core3 option is available at all three protocol levels.</p><div class="opts">';
       [['core3nf','Without CoreFlow'],['core3ng','Without CoreGreen'],['core3nr','Without CoreRed · shellfish-free'],['core3nb','Without CoreBlue']].forEach(o=>{
-        const S=SYSTEMS[o[0]];h+='<button class="opt'+(state.sys===o[0]?' sel':'')+'" data-pick="'+o[0]+'"><span class="radio"></span><span class="ob"><b>'+o[1]+'</b><span>'+S.tag+'</span></span>'+prodImgs(S.items)+'<span class="op">'+money(S.price.F)+'<small>per month</small></span></button>';
+        const S=SYSTEMS[o[0]];h+='<button class="opt'+(state.sys===o[0]?' sel':'')+'" data-pick="'+o[0]+'"><span class="radio"></span><span class="ob"><b>'+o[1]+'</b><span>'+S.tag+'</span></span>'+'<span class="op">'+money(S.price.F)+'<small>per month</small></span></button>';
       });
       h+='</div><p class="hint">Allergy notice: CoreRed contains crustacean shellfish from Antarctic krill.</p>';
       f='<button class="btn btn-ghost back" id="back">Back</button><button class="btn btn-primary" id="next" '+(state.sys&&state.sys.startsWith('core3')&&state.sys!=='core3'?'':'disabled style="opacity:.5"')+'>Continue</button>';
@@ -906,13 +913,14 @@ body.sub .subpage{display:block}
       f='<button class="btn btn-primary" id="done">Back to PERGA</button>';
     }
     body.innerHTML=h;foot.innerHTML=f;body.scrollTop=0;
+    const tc3=document.getElementById('toCore3');if(tc3)tc3.addEventListener('click',()=>{state.sys='core3';render();});
     body.querySelectorAll('[data-pick]').forEach(b=>b.addEventListener('click',()=>{state.sys=b.dataset.pick;state.proto='F';render();}));
     body.querySelectorAll('[data-proto]').forEach(b=>b.addEventListener('click',()=>{state.proto=b.dataset.proto;render();}));
     const next=document.getElementById('next'),back=document.getElementById('back'),done=document.getElementById('done');
-    if(back)back.addEventListener('click',()=>{if(state.step===2)state.step=(state.sys||'').startsWith('core3')?1:0;else if(state.step===1)state.step=0;else state.step--;render();});
+    if(back)back.addEventListener('click',()=>{if(state.step===2)state.step=((state.sys||'').startsWith('core3')||state.sys==='core4')?1:0;else if(state.step===1)state.step=0;else state.step--;render();});
     if(done)done.addEventListener('click',()=>{close();state.step=0;state.sys=null;});
     if(next)next.addEventListener('click',()=>{
-      if(state.step===0){if(!state.sys)return;state.step=state.sys==='core3'?1:2;}
+      if(state.step===0){if(!state.sys)return;state.step=(state.sys==='core3'||state.sys==='core4')?1:2;}
       else if(state.step===1){if(!state.sys||state.sys==='core3')return;state.step=2;}
       else if(state.step===2){state.step=3;}
       else if(state.step===3){state.step=4;}
