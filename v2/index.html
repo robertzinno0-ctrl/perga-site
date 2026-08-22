@@ -413,12 +413,12 @@ const LEVELS={
 const SYSTEMS={
  core2:{name:'Core2',items:['coreflow','coreblue'],price:{foundational:109},goal:'The simplest way in — two Cores, built from there.'},
  core3:{name:'Core3',items:['coreflow','coreblue','coregreen'],price:{foundational:129},goal:'Three Cores for a plant-based or shellfish-free routine.'},
- core4:{name:'Core4',items:['coreflow','coreblue','coregreen','corered'],price:{foundational:159},goal:'The complete foundational system. Two in the morning, two at night.',best:true}
+ core4:{name:'Core4',items:['coreflow','coreblue','coregreen','corered'],price:{foundational:159,longevity:399},goal:'The complete foundational system. Two in the morning, two at night.',best:true}
 };
 function retail(sys,lvl){ // à la carte monthly value at that allocation
   const L=LEVELS[lvl]; return SYSTEMS[sys].items.reduce((a,id)=>a+P(id).price*(id==='coreflow'?1:L.mult),0);
 }
-function priceFor(sys,lvl){ const s=SYSTEMS[sys]; if(s.price[lvl]) return s.price[lvl]; const r=retail(sys,lvl); const pct=lvl==='optimization'?.35:.30; return Math.round(r*(1-pct)); }
+function priceFor(sys,lvl){ const s=SYSTEMS[sys]; if(s.price[lvl]) return s.price[lvl]; const r=retail(sys,lvl); const pct=lvl==='optimization'?.35:.36; return Math.round(r*(1-pct)); }
 function savings(sys,lvl){ const r=retail(sys,lvl), p=priceFor(sys,lvl); return {amt:r-p,pct:Math.round((r-p)/r*100),retail:r}; }
 /* ---------- cart ---------- */
 let cart=JSON.parse(localStorage.getItem('perga2_cart')||'[]');
@@ -454,7 +454,7 @@ function protoCard(lvl,sys='core4',rec){ const L=LEVELS[lvl], S=SYSTEMS[sys], pr
   <div class="qty">${S.items.map(id=>`<span>${P(id).name}</span><span>${L.qty[id]} ${UNIT[id][L.qty[id]>1?1:0]} / day</span>`).join('')}</div>
   <div class="price"><b>${money(pr)}</b><span class="muted">/month · ProShip</span><s>${money(sv.retail)}</s></div><div class="save">Save ${money(sv.amt)} (~${sv.pct}%) vs. à la carte</div>
   <ul class="perks"><li>Free shipping on every ProShip</li><li>Ships monthly · pause or adjust any time</li><li>30-day satisfaction guarantee</li></ul>
-  ${L.tbd?'<div class="tbd">Longevity allocation shown is provisional — final configuration and price to be confirmed.</div>':''}
+  ${L.tbd?'<div class="tbd">Longevity daily quantities shown are provisional — final configuration to be confirmed.</div>':''}
   <button class="btn ${rec?'btn-primary':'btn-ghost'}" onclick="add('system','sub','${sys}','${lvl}')">Choose This Protocol</button></div>`; }
 function cmpTable(sys='core4'){ const S=SYSTEMS[sys], ls=['foundational','optimization','longevity'];
   return `<div class="cmp"><table><thead><tr><th></th>${ls.map(l=>`<th>${LEVELS[l].name}</th>`).join('')}</tr></thead><tbody>
@@ -528,7 +528,7 @@ pages.shop=(q)=>{ const sys=q.get('sys')||'core4'; const lvlF=q.get('lvl');
   const S=SYSTEMS[sys]; const levels=(lvlF?[lvlF]:['foundational','optimization','longevity']);
   const cards=levels.map(l=>{ const L=LEVELS[l], pr=priceFor(sys,l), sv=savings(sys,l); return `<div class="sopt ${l==='foundational'&&sys==='core4'?'best':''}"><span class="lvl">${L.name}</span><h3>${S.name} · ${L.name}</h3><p class="goal">${L.who}</p>
    <div class="rows"><div><span>Products</span><span>${S.items.map(i=>P(i).name).join(' + ')}</span></div>${S.items.map(id=>`<div><span>${P(id).name}</span><span>${L.qty[id]} ${UNIT[id][L.qty[id]>1?1:0]}/day · ${L.qty[id]*28} /month</span></div>`).join('')}<div><span>Monthly price (à la carte)</span><span>${money(sv.retail)}</span></div><div><span>ProShip price</span><span><b>${money(pr)}/mo</b></span></div><div><span>Shipping</span><span>Free with ProShip</span></div><div><span>You save</span><span class="save">${money(sv.amt)} (~${sv.pct}%)</span></div></div>
-   ${L.tbd?'<div class="tbd">Longevity allocation provisional — final configuration and price to be confirmed.</div>':''}
+   ${L.tbd?'<div class="tbd">Longevity quantities provisional — final configuration to be confirmed.</div>':''}
    <button class="btn btn-primary" onclick="add('system','sub','${sys}','${l}')">Select ${L.name}</button></div>`; }).join('');
   return `<section class="page-hero"><div class="wrap"><div class="crumbs"><a href="#/">Home</a> / Shop</div><h1>Shop PERGA</h1><p class="lead">Pick a system, then a protocol level. Every option shows what's inside, what it costs, and what you save — no math required.</p>
   <div class="shop-tabs" role="tablist">${tabs}</div><p class="muted small">${S.goal}${sys==='core4'?' Recommended for most people.':''}</p></div></section>
