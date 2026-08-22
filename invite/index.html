@@ -123,17 +123,11 @@ section{padding:clamp(52px,6.5vw,88px) 0}
 .pillar .k{margin-bottom:0;flex:0 0 auto;min-width:74px;font-size:21px}
 .pillar .v{font-size:14px;line-height:1.4}
 }
-.etym{background:var(--blue);color:var(--mist);border-radius:var(--r);padding:clamp(22px,2.6vw,32px);display:flex;flex-direction:column;gap:18px}
-.etym-defs{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2vw,28px)}
-.etym-word{display:flex;flex-direction:column;gap:4px;min-width:0}
-.etym-word+.etym-word{border-left:1px solid rgba(225,234,233,.28);padding-left:clamp(14px,2vw,28px)}
-.etym-word b{font-family:var(--display);font-weight:300;font-size:clamp(21px,2.2vw,30px);color:var(--peach);line-height:1.05;white-space:nowrap}
-.etym-word span{font-size:13.5px;color:var(--teal-soft);line-height:1.35}
-.etym-word i{font-style:italic;opacity:.85}
-.etym-blend{font-size:15px;line-height:1.55;color:rgba(225,234,233,.85);border-top:1px solid rgba(225,234,233,.2);padding-top:18px}
-.etym-blend strong{color:#fff;font-weight:500}
-.etym-motto{font-family:var(--display);font-size:clamp(20px,2vw,26px);color:#fff;line-height:1.25;letter-spacing:.01em}
-@media(max-width:380px){.etym-word b{font-size:19px}}
+.etym{display:flex;flex-direction:column;gap:12px;padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.etym-line{font-size:clamp(16px,1.5vw,18px);line-height:1.6;color:var(--ink-2);max-width:52ch}
+.etym-line b{font-family:var(--display);font-weight:400;font-size:1.18em;color:var(--blue);white-space:nowrap}
+.etym-line i{font-style:normal;color:var(--teal)}
+.etym-motto{font-family:var(--display);font-size:clamp(24px,2.4vw,32px);color:var(--blue);line-height:1.2;letter-spacing:-.005em}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{font-size:13px;padding:7px 13px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--ink-2)}
 
@@ -452,11 +446,7 @@ body.sub .subpage{display:block}
     </div>
     <div class="stack rv d2">
       <div class="etym">
-        <div class="etym-defs">
-          <div class="etym-word"><b>*Purg&#224;re</b><span><i>v.</i> To renew, cleanse.</span></div>
-          <div class="etym-word"><b>*Per&#242;</b><span><i>v.</i> To go forward.</span></div>
-        </div>
-        <p class="etym-blend">PERGA blends the Latin words <strong>Purg&#224;re</strong> (&#8220;to cleanse and renew&#8221;) and <strong>Per&#242;</strong> (&#8220;to go forward&#8221;) &#8212; our belief that true transformation begins with letting go, so we can go forward stronger.</p>
+        <p class="etym-line">PERGA blends <b>*Purg&#224;re</b> <i>&#8212; to cleanse and renew</i> with <b>*Per&#242;</b> <i>&#8212; to go forward</i>.</p>
         <p class="etym-motto">Cleanse. Renew. Go Forward.</p>
       </div>
       <div class="pillars">
