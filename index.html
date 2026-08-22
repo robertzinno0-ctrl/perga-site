@@ -966,7 +966,7 @@ footer .disclaimer{font-size:.8rem;line-height:1.5;border-top:1px solid var(--mi
 <!-- START / PACKS -->
 <section class="on-mist" id="start">
   <div class="wrap">
-    <div class="sec-head rv"><span class="eyebrow">Start your Core4</span><h2>Four ways to start.</h2><p>Flexibility, not pressure. Pick the path that fits — Core4 is the flagship and the strongest overall value, but every door leads to the same foundation.</p></div>
+    <div class="sec-head rv"><span class="eyebrow">Start your Core4</span><h2>Four ways to start.</h2><p>Flexibility, not pressure. Start with two Cores for $109, three for $129, or the full Core4 for $159 — Core4 is the flagship and the strongest overall value, but every door leads to the same foundation.</p></div>
     <div class="packs three-ways" id="packgrid"></div>
   </div>
 </section>
@@ -1133,13 +1133,14 @@ function render(){
   const up = $('#upsell');
   // upgrade nudge: all four singles -> System
   const up2=$('#upgrade'); const singles=PRODUCTS.filter(p=>have.has(p.id));
-  if(!have.has('family') && singles.length>=3){ const cur=cart.filter(l=>!isBundle(l.id)).reduce((a,l)=>a+linePrice(l),0); const diff=cur-BUNDLE.price; up2.hidden=false; up2.innerHTML=`<span>You've nearly built Core4. Switch and ${diff>0?'save '+money(diff)+'/mo':'get all four for '+money(BUNDLE.price)+'/mo'}.</span><button onclick="upgradeToSystem()">Switch</button>`; } else up2.hidden=true;
+  if(!have.has('family') && !have.has('core3') && !have.has('core2') && singles.length>=2){ const cur=cart.filter(l=>!isBundle(l.id)).reduce((a,l)=>a+linePrice(l),0); const tgt=singles.length>=4?BUNDLES.family:(singles.length===3?BUNDLES.core3:BUNDLES.core2); const diff=cur-tgt.price; up2.hidden=false; up2.innerHTML=`<span>${singles.length>=4?"You've built Core4.":"Those "+singles.length+" make a "+tgt.name+"."} Switch to ${tgt.name} ProShip ${diff>0?'and save '+money(diff)+'/mo':'for '+money(tgt.price)+'/mo'} + free shipping.</span><button onclick="upgradeTo('${tgt.id}')">Switch</button>`; } else up2.hidden=true;
   if(cart.length && !have.has('family') && !have.has('core3') && !have.has('core2') && missing){
     up.hidden=false; up.innerHTML = `<span>Complete the stack with <b>${missing.name}</b></span><button onclick="add('${missing.id}','sub')">Add for ${money(missing.price)}</button>`;
   } else up.hidden=true;
   $('#checkout').disabled = !cart.length;
 }
-function upgradeToSystem(){ cart=cart.filter(l=>l.id==='family'); add('family','sub'); toast('Upgraded to Core4'); }
+function upgradeTo(id){ cart=cart.filter(l=>isBundle(l.id)); add(id,'sub'); toast('Switched to '+BUNDLES[id].name); }
+function upgradeToSystem(){ upgradeTo('family'); }
 function openCart(){ $('#drawer').classList.add('show'); $('#scrim').classList.add('show'); }
 function closeCart(){ $('#drawer').classList.remove('show'); $('#scrim').classList.remove('show'); }
 $('#openCart').onclick = openCart; $('#closeCart').onclick = closeCart; $('#scrim').onclick = ()=>{closeCart();closeModal();closeCapture();};
@@ -1303,7 +1304,7 @@ armReveal();
 const POS={coreflow:['Gut + Microbiome Foundation','Morning'],coreblue:['Cellular Energy + Protection','Morning'],coregreen:['Detoxification + Nutrient Density','Evening'],corered:['Mobility + Hydration + Recovery','Evening']};
 $('#famImg').src=IMGS['perga-family-6']; $('#famImg').closest('.stage').classList.add('photo'); $('#fourImg').src=IMGS['cut-family']; $('#finalImg').src=IMGS['cut-family'];
 [['#flowImg','coreflow-5'],['#blueImg','core-blue-4'],['#greenImg','core-green-6'],['#redImg','core-red-3']].forEach(([id,k])=>{ const im=$(id); im.src=IMGS[k]; im.closest('.vis').classList.add('photo'); });
-$('#core4grid').innerHTML=['coreflow','coreblue','coregreen','corered'].map(id=>{const p=PRODUCTS.find(x=>x.id===id);return `<a class="ctile" href="#/product/${id}"><span class="when">${POS[id][1]}</span><div class="pic photo"><img src="${IMGS[p.img]}" alt="${p.name}"></div><h3>${p.name}™</h3><span class="pos">${POS[id][0]}</span><span class="price">${money(p.price)} à la carte · in Core4 from $159/mo</span><span class="btn btn-ghost" style="padding:.6rem 1.1rem;font-size:.9rem">Explore</span></a>`}).join('');
+$('#core4grid').innerHTML=['coreflow','coreblue','coregreen','corered'].map(id=>{const p=PRODUCTS.find(x=>x.id===id);return `<a class="ctile" href="#/product/${id}"><span class="when">${POS[id][1]}</span><div class="pic photo"><img src="${IMGS[p.img]}" alt="${p.name}"></div><h3>${p.name}™</h3><span class="pos">${POS[id][0]}</span><span class="price">${money(p.price)} à la carte · bundles from $109/mo</span><span class="btn btn-ghost" style="padding:.6rem 1.1rem;font-size:.9rem">Explore</span></a>`}).join('');
 $('#routineGrid').innerHTML=[['Morning','With breakfast',['coreflow','coreblue']],['Evening','With dinner',['coregreen','corered']]].map(([t,sub,ids])=>`<div class="rcard rv"><div class="t"><b>${t}</b><span>${sub}</span></div>${ids.map(id=>{const p=PRODUCTS.find(x=>x.id===id);return `<div class="ritem"><img src="${IMGS['cut-'+id]}" alt=""><div><b>${p.name}™</b><span>${p.format.replace(' · Unflavored','')}</span></div></div>`}).join('')}</div>`).join('');
 
 // ingredients
