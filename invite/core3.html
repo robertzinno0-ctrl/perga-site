@@ -108,6 +108,31 @@ section{padding:clamp(52px,6.5vw,88px) 0}
 .pack-pair.flip .pk-front{left:40%;width:52%;z-index:2;opacity:.72;transform:translateY(6%)}
 .pack-pair .pk-stick{left:75%;width:15%;z-index:1;opacity:.9;transition:opacity .4s}
 .pack-pair.flip .pk-stick{opacity:0}
+.pack-pair .zoom-hint{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);z-index:11;
+  display:inline-flex;align-items:center;gap:7px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:500;
+  color:var(--ink-3);opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.on-blue .pack-pair .zoom-hint{color:rgba(225,234,233,.8)}
+.pack-pair .zoom-hint svg{width:15px;height:15px}
+.pack-pair:hover .zoom-hint,.pack-pair:focus-within .zoom-hint{opacity:1}
+@media(hover:none){.pack-pair .zoom-hint{opacity:1}}
+.lb{position:fixed;inset:0;z-index:200;background:rgba(2,26,34,.95);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;gap:clamp(6px,2vw,24px);padding:clamp(14px,3vw,40px);opacity:0;transition:opacity .3s}
+.lb[hidden]{display:none}
+.lb.open{opacity:1}
+.lb-fig{margin:0;display:flex;flex-direction:column;align-items:center;gap:14px;max-height:100%;min-width:0}
+.lb-fig img{max-width:min(78vw,760px);max-height:78vh;width:auto;height:auto;object-fit:contain;
+  filter:drop-shadow(0 30px 60px rgba(0,0,0,.6))}
+.lb-fig figcaption{font-family:var(--body);font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--mist);text-align:center}
+.lb-close{position:absolute;top:clamp(12px,2vw,24px);right:clamp(12px,2vw,24px);width:46px;height:46px;border-radius:50%;
+  border:1px solid rgba(225,234,233,.3);background:rgba(225,234,233,.1);color:var(--mist);display:grid;place-items:center;cursor:pointer;transition:background .2s}
+.lb-close:hover{background:rgba(225,234,233,.22)}
+.lb-close svg{width:20px;height:20px}
+.lb-nav{width:52px;height:52px;flex:none;border-radius:50%;border:1px solid rgba(225,234,233,.3);background:rgba(225,234,233,.1);
+  color:var(--mist);display:grid;place-items:center;cursor:pointer;transition:background .2s}
+.lb-nav:hover{background:rgba(225,234,233,.22)}
+.lb-nav svg{width:22px;height:22px}
+.lb-close:focus-visible,.lb-nav:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+@media(max-width:560px){.lb-nav{width:42px;height:42px}.lb-fig img{max-width:82vw}}
 .pack-pair .zone{position:absolute;top:0;bottom:0;width:50%;z-index:10;cursor:pointer}
 .pack-pair .zone-l{left:0}
 .pack-pair .zone-r{right:0}
@@ -503,6 +528,15 @@ body.sub .subpage{display:block}
     <p class="tbl-note">Monthly ProShip prices. Free shipping on every order. Foundation = 5 tablets / 1 softgel / 1 serving daily; Optimization doubles and Longevity triples CoreBlue, CoreGreen, and CoreRed while CoreFlow stays at one serving.</p>
   </div>
 </section>
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Product image viewer" hidden>
+  <button class="lb-close" id="lbClose" aria-label="Close viewer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <figure class="lb-fig">
+    <img id="lbImg" src="" alt="">
+    <figcaption id="lbCap"></figcaption>
+  </figure>
+  <button class="lb-nav lb-next" id="lbNext" aria-label="Next view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+</div>
 
 <!-- RESERVATION PANEL -->
 <div class="ov" id="ov"></div>
@@ -667,16 +701,37 @@ body.sub .subpage{display:block}
   addEventListener('popstate',()=>{const on=location.hash==='#core3-options';document.body.classList.toggle('sub',on);page.hidden=!on;});
   if(location.hash==='#core3-options')showPage(true);
 
-  // Product pouch: fixed left/right zones swap which face leads (no hover thrash)
+  // Product pouch: fixed zones swap the faces; clicking opens the enlarged viewer
+  const lb=document.getElementById('lb'), lbImg=document.getElementById('lbImg'), lbCap=document.getElementById('lbCap');
+  let lbSet=[], lbIdx=0, lbPrevFocus=null;
+  function lbRender(){ const it=lbSet[lbIdx]; if(!it)return; lbImg.src=it.src; lbImg.alt=it.cap; lbCap.textContent=it.cap; }
+  function lbOpen(set,i,origin){ lbSet=set; lbIdx=i; lbPrevFocus=origin||null; lbRender();
+    lb.hidden=false; requestAnimationFrame(()=>lb.classList.add('open'));
+    document.body.style.overflow='hidden'; document.getElementById('lbClose').focus(); }
+  function lbClose(){ lb.classList.remove('open'); document.body.style.overflow='';
+    setTimeout(()=>{lb.hidden=true;},300); if(lbPrevFocus&&lbPrevFocus.focus)lbPrevFocus.focus(); }
+  function lbStep(d){ if(!lbSet.length)return; lbIdx=(lbIdx+d+lbSet.length)%lbSet.length; lbRender(); }
+  document.getElementById('lbClose').addEventListener('click',lbClose);
+  document.getElementById('lbPrev').addEventListener('click',()=>lbStep(-1));
+  document.getElementById('lbNext').addEventListener('click',()=>lbStep(1));
+  lb.addEventListener('click',e=>{ if(e.target===lb)lbClose(); });
+  document.addEventListener('keydown',e=>{ if(lb.hidden)return;
+    if(e.key==='Escape')lbClose(); if(e.key==='ArrowRight')lbStep(1); if(e.key==='ArrowLeft')lbStep(-1); });
+
   document.querySelectorAll('.pack-pair').forEach(pair=>{
     const set=on=>pair.classList.toggle('flip',on);
+    const f=pair.querySelector('.pk-front'), bk=pair.querySelector('.pk-back');
+    const views=[{src:f.src,cap:(f.alt||'').replace(/,\s*front.*$/i,'')+' — Front'},
+                 {src:bk.src,cap:(bk.alt||'').replace(/,\s*back.*$/i,'')+' — Back'}];
     pair.querySelectorAll('.zone').forEach(z=>{
       const wantBack = z.dataset.side==='back';
       z.addEventListener('mouseenter',()=>set(wantBack));
-      z.addEventListener('click',()=>set(wantBack));
+      z.addEventListener('click',()=>lbOpen(views, wantBack?1:0, pair));
     });
     pair.addEventListener('mouseleave',()=>set(false));
-    pair.addEventListener('keydown',e=>{ if(e.key===' '||e.key==='Enter'){e.preventDefault();set(!pair.classList.contains('flip'));} });
+    pair.addEventListener('keydown',e=>{
+      if(e.key===' '){e.preventDefault();set(!pair.classList.contains('flip'));}
+      if(e.key==='Enter'){e.preventDefault();lbOpen(views, pair.classList.contains('flip')?1:0, pair);} });
   });
   // in-page anchors (base href safe)
   document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}}));
