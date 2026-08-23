@@ -461,6 +461,7 @@ body.sub .subpage{display:block}
 </head>
 <body>
 
+<noscript><style>.rv{opacity:1!important;transform:none!important}</style></noscript>
 
 <div class="announce">Free Shipping on All ProShip Orders</div>
 
@@ -1086,9 +1087,28 @@ body.sub .subpage{display:block}
     });
   }
 
-  // reveal
-  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12,rootMargin:'0px 0px -40px 0px'});
-  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+  // reveal — plain scroll sweep. Never let content depend on IntersectionObserver:
+  // if it misfires, whole sections stay invisible.
+  let rvQueue=[...document.querySelectorAll('.rv')];
+  let rvTick=false;
+  function rvSweep(){
+    const vh=window.innerHeight||document.documentElement.clientHeight;
+    for(let i=rvQueue.length-1;i>=0;i--){
+      const el=rvQueue[i];
+      const r=el.getBoundingClientRect();
+      if(r.top < vh*1.02){ el.classList.add('in'); rvQueue.splice(i,1); }
+    }
+  }
+  function rvOnScroll(){ if(rvTick)return; rvTick=true; requestAnimationFrame(()=>{rvSweep();rvTick=false;}); }
+  rvSweep();
+  addEventListener('load',rvSweep);
+  [200,600,1200,2000].forEach(t=>setTimeout(rvSweep,t));   // catch late layout (fonts/images)
+  addEventListener('scroll',rvOnScroll,{passive:true});
+  addEventListener('resize',rvOnScroll,{passive:true});
+  document.addEventListener('visibilitychange',rvOnScroll);
+  // safety net: nothing stays invisible, whatever happens
+  setTimeout(()=>{document.querySelectorAll('.rv:not(.in)').forEach(e=>e.classList.add('in'));rvQueue=[];},2600);
+  window.PERGA_REVEAL_ALL=()=>{document.querySelectorAll('.rv:not(.in)').forEach(e=>e.classList.add('in'));};
 
 
 
@@ -1150,9 +1170,14 @@ body.sub .subpage{display:block}
   document.getElementById('compareBtn').addEventListener('click',openCmp);
   document.getElementById('cclose').addEventListener('click',closeCmp);cov.addEventListener('click',closeCmp);
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCmp();});
-  // sticky mobile CTA after hero
+  // sticky mobile CTA after hero (scroll-based, same reason)
   const hero=document.getElementById('top'),sticky=document.getElementById('sticky');
-  new IntersectionObserver(es=>es.forEach(e=>sticky.classList.toggle('show',!e.isIntersecting&&e.boundingClientRect.top<0))).observe(hero);
+  if(hero&&sticky){
+    const stickyCheck=()=>{ const b=hero.getBoundingClientRect().bottom; sticky.classList.toggle('show', b<0); };
+    stickyCheck();
+    addEventListener('scroll',stickyCheck,{passive:true});
+    addEventListener('resize',stickyCheck,{passive:true});
+  }
 
   // hero dots canvas
   const c=document.getElementById('dots');
