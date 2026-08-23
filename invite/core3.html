@@ -96,10 +96,24 @@ section{padding:clamp(52px,6.5vw,88px) 0}
 .hero .dots{position:absolute;inset:0;z-index:0;opacity:.5;pointer-events:none}
 @keyframes rise{from{opacity:0;transform:translateY(30px) scale(.97)}to{opacity:1;transform:none}}
 
-.pv .prender{position:relative;width:100%;max-width:560px;max-height:none;height:auto;filter:drop-shadow(0 26px 34px rgba(0,62,81,.32));transition:transform .6s cubic-bezier(.2,.8,.2,1)}
-.pv:hover .prender{transform:translateY(-8px)}
-.on-blue .pv .prender{filter:drop-shadow(0 26px 40px rgba(0,0,0,.5))}
-@media(max-width:880px){.pv .prender{max-width:440px}}
+.pack-pair{position:relative;width:clamp(280px,36vw,560px);aspect-ratio:1.34;outline:none;margin:0 auto}
+.pack-pair .pk{position:absolute;bottom:0;height:auto;filter:drop-shadow(0 22px 30px rgba(0,62,81,.34))}
+.on-blue .pack-pair .pk{filter:drop-shadow(0 22px 34px rgba(0,0,0,.5))}
+/* the two pouches trade places; hover targets are fixed zones so nothing oscillates */
+.pack-pair .pk{transition:left .6s cubic-bezier(.22,.9,.24,1),width .6s cubic-bezier(.22,.9,.24,1),
+  transform .6s cubic-bezier(.22,.9,.24,1),opacity .4s ease,filter .4s ease}
+.pack-pair .pk-front{left:0;width:60%;z-index:3;opacity:1;transform:translateY(0)}
+.pack-pair .pk-back{left:40%;width:52%;z-index:2;opacity:.88;transform:translateY(6%)}
+.pack-pair.flip .pk-back{left:0;width:60%;z-index:3;opacity:1;transform:translateY(0)}
+.pack-pair.flip .pk-front{left:40%;width:52%;z-index:2;opacity:.72;transform:translateY(6%)}
+.pack-pair .pk-stick{left:75%;width:15%;z-index:1;opacity:.9;transition:opacity .4s}
+.pack-pair.flip .pk-stick{opacity:0}
+.pack-pair .zone{position:absolute;top:0;bottom:0;width:50%;z-index:10;cursor:pointer}
+.pack-pair .zone-l{left:0}
+.pack-pair .zone-r{right:0}
+.pack-pair:focus-visible{box-shadow:0 0 0 3px var(--teal);border-radius:12px}
+@media(max-width:880px){.pack-pair{width:clamp(240px,80vw,430px)}}
+@media(prefers-reduced-motion:reduce){.pack-pair .pk{transition:none}}
 .pv .photo{position:relative;width:100%;max-width:560px;aspect-ratio:3/2;object-fit:cover;border-radius:24px;box-shadow:var(--shadow);transition:transform .7s cubic-bezier(.2,.8,.2,1)}
 .pv:hover .photo{transform:scale(1.02)}
 .pv .pack-mini{position:absolute;right:4%;bottom:-6%;height:150px;width:auto;filter:drop-shadow(0 18px 24px rgba(0,62,81,.35));transition:transform .7s cubic-bezier(.2,.8,.2,1)}
@@ -652,6 +666,18 @@ body.sub .subpage{display:block}
   document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>{showPage(false);try{history.pushState({},'',' ');}catch(e){}setTimeout(()=>document.getElementById('systems').scrollIntoView(),30);}));
   addEventListener('popstate',()=>{const on=location.hash==='#core3-options';document.body.classList.toggle('sub',on);page.hidden=!on;});
   if(location.hash==='#core3-options')showPage(true);
+
+  // Product pouch: fixed left/right zones swap which face leads (no hover thrash)
+  document.querySelectorAll('.pack-pair').forEach(pair=>{
+    const set=on=>pair.classList.toggle('flip',on);
+    pair.querySelectorAll('.zone').forEach(z=>{
+      const wantBack = z.dataset.side==='back';
+      z.addEventListener('mouseenter',()=>set(wantBack));
+      z.addEventListener('click',()=>set(wantBack));
+    });
+    pair.addEventListener('mouseleave',()=>set(false));
+    pair.addEventListener('keydown',e=>{ if(e.key===' '||e.key==='Enter'){e.preventDefault();set(!pair.classList.contains('flip'));} });
+  });
   // in-page anchors (base href safe)
   document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}}));
   // Compare modal
