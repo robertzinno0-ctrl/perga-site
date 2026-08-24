@@ -446,6 +446,10 @@ body.sub .subpage{display:block}
 .opt .mini{display:flex;gap:4px}
 .opt .mini img{height:34px;width:auto}
 .opt .ob .tagpop{display:inline-block;margin-bottom:5px;font-family:var(--body);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;color:#fff;background:#35787C;padding:4px 9px;border-radius:999px;line-height:1.2}
+.referred-by{display:inline-flex;align-self:flex-start;width:fit-content;flex:0 0 auto;align-items:baseline;gap:8px;margin:16px 0 0;padding:9px 16px;background:rgba(225,234,233,.10);border:1px solid var(--line-mist);border-radius:999px;font-size:14.5px;color:rgba(225,234,233,.82);line-height:1.3}
+.referred-by[hidden]{display:none}
+.referred-by .rb-label{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;color:var(--teal-soft)}
+.referred-by strong{font-family:var(--display);font-weight:400;font-size:17px;color:#fff}
 .fmnote{display:flex;align-items:center;gap:7px;margin:7px 0 0;font-size:13.5px;color:var(--teal-text)}
 .fmnote svg{width:15px;height:15px;flex:none}
 .field input[readonly]{background:var(--mist-2);color:var(--ink-2);cursor:default}
@@ -529,7 +533,8 @@ html[data-motion="off"]{scroll-behavior:auto}
         <span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
         Founding Member invitation · Pre-launch access
       </div>
-      <h1>You’ve Been Hand‑Selected by a PERGA Founding Member</h1></div>
+      <h1>You’ve Been Hand‑Selected by a PERGA Founding Member</h1>
+      <p class="referred-by" id="referredBy" hidden></p></div>
     <div class="hero-copy">
       <p class="lead">You are being invited to become one of PERGA’s first customers before we open to the general public. Customer shipments are scheduled to begin September 1.</p>
       <p class="lead" style="font-size:17px">Because demand is already extremely high and availability will be limited, reserve your place now by selecting the Core system and protocol that best fits your goals.</p>
@@ -1026,12 +1031,35 @@ html[data-motion="off"]{scroll-behavior:auto}
     if(v){ try{ sessionStorage.setItem(KEY,v); }catch(e){} return v; }
     try{ return sessionStorage.getItem(KEY)||null; }catch(e){ return null; }
   })();
-  window.PERGA_REF=PERGA_REF;
+  // optional display name on the link: &by=Sarah+Mitchell  (display only — attribution is the code)
+  const PERGA_BY=(function(){
+    const KEY='perga-by';
+    let v=null;
+    try{
+      const q=new URLSearchParams(location.search).get('by');
+      if(q) v=q.replace(/[^A-Za-z .'\u2019-]/g,'').replace(/\s+/g,' ').trim().slice(0,40);
+    }catch(e){}
+    if(v){ try{ sessionStorage.setItem(KEY,v); }catch(e){} return v; }
+    try{ return sessionStorage.getItem(KEY)||null; }catch(e){ return null; }
+  })();
+  window.PERGA_REF=PERGA_REF; window.PERGA_BY=PERGA_BY;
+
+  // "Referred by" line in the hero — textContent only, never innerHTML
+  if(PERGA_REF){
+    const slot=document.getElementById('referredBy');
+    if(slot){
+      const who=PERGA_BY||'a PERGA Founding Member';
+      const lab=document.createElement('span'); lab.className='rb-label'; lab.textContent='Referred by';
+      const nm=document.createElement('strong'); nm.textContent=who;
+      slot.appendChild(lab); slot.appendChild(nm);
+      slot.hidden=false;
+    }
+  }
   // keep the code attached when moving between index and the Core3 page
   if(PERGA_REF){
     document.querySelectorAll('a[href$="core3.html"],a[href^="index.html"],a[href="index.html"]').forEach(a=>{
       try{ const u=new URL(a.getAttribute('href'),location.href);
-           if(!u.searchParams.get('ref')){ u.searchParams.set('ref',PERGA_REF);
+           if(!u.searchParams.get('ref')){ u.searchParams.set('ref',PERGA_REF); if(PERGA_BY)u.searchParams.set('by',PERGA_BY);
              a.setAttribute('href',u.pathname+u.search+u.hash); } }catch(e){}
     });
   }
@@ -1136,7 +1164,7 @@ html[data-motion="off"]{scroll-behavior:auto}
         '<div class="field"><label for="ph">Phone</label><input id="ph" name="ph" type="tel" autocomplete="tel"></div>'+
         '<div class="field"><label for="ad">Shipping address</label><input id="ad" name="ad" autocomplete="street-address" required></div>'+
         '<div class="row"><div class="field"><label for="ci">City</label><input id="ci" name="ci" autocomplete="address-level2" required></div><div class="field"><label for="st">State / ZIP</label><input id="st" name="st" autocomplete="postal-code" required></div></div>'+
-        (PERGA_REF ? '<div class="field"><label for="fm">Founding Member who invited you</label><input id="fm" name="fm" autocomplete="off" readonly value="'+PERGA_REF+'" aria-describedby="fmnote"><p class="fmnote" id="fmnote"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Invitation confirmed</p></div>' : '<div class="field"><label for="fm">Founding Member who invited you (optional)</label><input id="fm" name="fm" autocomplete="off"></div>')+
+        (PERGA_REF ? '<div class="field"><label for="fm">Founding Member who invited you</label><input id="fm" name="fm" autocomplete="off" readonly value="'+PERGA_REF+'" aria-describedby="fmnote"><p class="fmnote" id="fmnote"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Invitation confirmed'+(PERGA_BY?' \u00b7 '+PERGA_BY:'')+'</p></div>' : '<div class="field"><label for="fm">Founding Member who invited you (optional)</label><input id="fm" name="fm" autocomplete="off"></div>')+
         '<h4>Payment</h4>'+
         '<div class="field"><label for="cc">Card number</label><input id="cc" name="cc" inputmode="numeric" autocomplete="off" placeholder="•••• •••• •••• ••••" required></div>'+
         '<div class="row"><div class="field"><label for="ex">Expiry</label><input id="ex" name="ex" placeholder="MM / YY" autocomplete="off" required></div><div class="field"><label for="cv">CVC</label><input id="cv" name="cv" inputmode="numeric" autocomplete="off" placeholder="•••" required></div></div>'+
