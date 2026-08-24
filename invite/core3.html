@@ -450,6 +450,9 @@ body.sub .subpage{display:block}
 .referred-by[hidden]{display:none}
 .referred-by .rb-label{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;color:var(--teal-soft)}
 .referred-by strong{font-family:var(--display);font-weight:400;font-size:17px;color:#fff}
+.done.preview .seal{background:#B4541E}
+.seal.preview svg{width:26px;height:26px}
+.done.preview .ref{background:rgba(180,84,30,.10);color:#8A4116}
 .fmnote{display:flex;align-items:center;gap:7px;margin:7px 0 0;font-size:13.5px;color:var(--teal-text)}
 .fmnote svg{width:15px;height:15px;flex:none}
 .field input[readonly]{background:var(--mist-2);color:var(--ink-2);cursor:default}
@@ -631,6 +634,17 @@ html[data-motion="off"]{scroll-behavior:auto}
   const DAYS=28;
   const state={sys:null,proto:"F",step:0,form:{}};
 
+  // ============================================================
+  //  BACKEND CONFIG — set `endpoint` to go live. That is the only edit needed.
+  //  endpoint null  → PREVIEW MODE: no card fields, nothing is captured, and the
+  //                   final screen says so plainly. Safe to demo, impossible to mislead.
+  //  endpoint set   → LIVE MODE: POSTs the order, uses the server's reservation id,
+  //                   follows checkoutUrl for payment, surfaces server errors.
+  //  See docs/INTEGRATION.md for the request/response contract.
+  // ============================================================
+  window.PERGA_CONFIG = window.PERGA_CONFIG || { endpoint: null };
+  const PERGA_LIVE = !!(window.PERGA_CONFIG && window.PERGA_CONFIG.endpoint);
+
   // --- Founding Member referral capture ---
   // Link format: /invite/?ref=CODE  (opaque member code; backend resolves it)
   const PERGA_REF=(function(){
@@ -777,17 +791,19 @@ html[data-motion="off"]{scroll-behavior:auto}
         '<div class="field"><label for="ad">Shipping address</label><input id="ad" name="ad" autocomplete="street-address" required></div>'+
         '<div class="row"><div class="field"><label for="ci">City</label><input id="ci" name="ci" autocomplete="address-level2" required></div><div class="field"><label for="st">State / ZIP</label><input id="st" name="st" autocomplete="postal-code" required></div></div>'+
         (PERGA_REF ? '<div class="field"><label for="fm">Founding Member who invited you</label><input id="fm" name="fm" autocomplete="off" readonly value="'+PERGA_REF+'" aria-describedby="fmnote"><p class="fmnote" id="fmnote"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Invitation confirmed'+(PERGA_BY?' \u00b7 '+PERGA_BY:'')+'</p></div>' : '<div class="field"><label for="fm">Founding Member who invited you (optional)</label><input id="fm" name="fm" autocomplete="off"></div>')+
-        '<h4>Payment</h4>'+
-        '<div class="field"><label for="cc">Card number</label><input id="cc" name="cc" inputmode="numeric" autocomplete="off" placeholder="•••• •••• •••• ••••" required></div>'+
-        '<div class="row"><div class="field"><label for="ex">Expiry</label><input id="ex" name="ex" placeholder="MM / YY" autocomplete="off" required></div><div class="field"><label for="cv">CVC</label><input id="cv" name="cv" inputmode="numeric" autocomplete="off" placeholder="•••" required></div></div>'+
-        '<div class="secure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Design preview — this form does not transmit or store card details.</div>'+
+        '<div class="secure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'+(PERGA_LIVE?'Payment is completed on a secure checkout page after this step. No card details are entered here.':'Preview only — no payment is taken and no reservation is recorded.')+'</div>'+
         '<p class="err-msg" id="err" role="alert" aria-live="assertive">Please complete the highlighted fields.</p>'+
       '</form>';
-      f='<div style="flex:1;display:flex;flex-direction:column;gap:8px"><button class="btn btn-primary" id="next">Reserve · '+money(price)+'</button><span class="fine">Your payment is processed when your reservation is placed. Shipping is scheduled to begin September 1.</span></div>';
+      f='<div style="flex:1;display:flex;flex-direction:column;gap:8px"><button class="btn btn-primary" id="next">'+(PERGA_LIVE?'Reserve · '+money(price):'Preview reservation')+'</button><span class="fine">'+(PERGA_LIVE?'You will be taken to a secure checkout to complete payment. Shipping is scheduled to begin September 1.':'This is a design preview. Nothing is charged and no reservation is recorded.')+'</span></div>';
     }
     else if(state.step===5){
-      const ref='PG-'+(1000+Math.floor(Math.random()*9000));window.PERGA_ORDER={reservation:ref,referralCode:PERGA_REF||null,system:state.sys,protocol:state.proto,customerSku:s.sku[state.proto],price:s.price[state.proto],customer:Object.fromEntries(Object.entries(state.form).filter(([k])=>!['cc','ex','cv'].includes(k)))};
-      h+='<div class="done" data-sku="'+s.sku[state.proto]+'"><div class="seal">'+svgCheck+'</div><h3>You’re Officially on the List!</h3><p>Your PERGA customer reservation has been received. Your order is scheduled to begin shipping September 1, based on the order in which reservations were received.</p><p>Watch your email for order updates, education, and instructions for getting the most from your Core system.</p><div class="ref">Reservation <b>'+ref+'</b> · '+s.name+' · '+PROTO[state.proto].name+'</div></div>';
+      const ref=state.serverRef||null;
+      window.PERGA_ORDER=Object.assign({reservation:ref},buildOrder());
+      if(PERGA_LIVE){
+        h+='<div class="done" data-sku="'+s.sku[state.proto]+'"><div class="seal">'+svgCheck+'</div><h3>You’re Officially on the List!</h3><p>Your PERGA customer reservation has been received. Your order is scheduled to begin shipping September 1, based on the order in which reservations were received.</p><p>Watch your email for order updates, education, and instructions for getting the most from your Core system.</p>'+(ref?'<div class="ref">Reservation <b>'+ref+'</b> · '+s.name+' · '+PROTO[state.proto].name+'</div>':'<div class="ref">'+s.name+' · '+PROTO[state.proto].name+'</div>')+'</div>';
+      } else {
+        h+='<div class="done preview" data-sku="'+s.sku[state.proto]+'"><div class="seal preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div><h3>Design preview — nothing was submitted</h3><p><b>No reservation was recorded and no payment was taken.</b> This page is not yet connected to PERGA’s ordering system, so nothing you entered was sent or stored anywhere.</p><p>This is what a customer would select. Once checkout is connected, this screen will confirm a real reservation.</p><div class="ref">Would have reserved · '+s.name+' · '+PROTO[state.proto].name+' · '+money(s.price[state.proto])+'</div></div>';
+      }
       f='<button class="btn btn-primary" id="done">Back to PERGA</button>';
     }
     body.innerHTML=h;foot.innerHTML=f;body.scrollTop=0;
@@ -805,12 +821,51 @@ html[data-motion="off"]{scroll-behavior:auto}
       else if(state.step===4){
         const form=document.getElementById('form');let ok=true;
         form.querySelectorAll('input[required]').forEach(i=>{const bad=!i.value.trim()||(i.type==='email'&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(i.value));i.classList.toggle('err',bad);i.setAttribute('aria-invalid',bad?'true':'false');if(bad){i.setAttribute('aria-describedby','err');ok=false;}else{i.removeAttribute('aria-describedby');}});
-        const firstBad=form.querySelector('input[aria-invalid="true"]'); if(firstBad)firstBad.focus();
-        document.getElementById('err').classList.toggle('show',!ok);if(!ok)return;form.querySelectorAll('input').forEach(i=>{if(!['cc','ex','cv'].includes(i.name))state.form[i.name]=i.value.trim();});
-        state.step=5;
+        const errEl=document.getElementById('err');
+        if(!ok){ errEl.textContent='Please complete the highlighted fields.'; errEl.classList.add('show');
+                 const firstBad=form.querySelector('input[aria-invalid="true"]'); if(firstBad)firstBad.focus(); return; }
+        errEl.classList.remove('show');
+        form.querySelectorAll('input').forEach(i=>{ state.form[i.name]=i.value.trim(); });
+        submitReservation();
+        return;
       }
       render();
     });
+  }
+
+  // --- reservation submit -------------------------------------------------
+  function buildOrder(){
+    const s=SYSTEMS[state.sys];
+    return {
+      referralCode: PERGA_REF||null,
+      system: state.sys,
+      protocol: state.proto,
+      customerSku: s.sku[state.proto],
+      price: s.price[state.proto],
+      customer: Object.assign({}, state.form)
+    };
+  }
+  async function submitReservation(){
+    const btn=document.getElementById('next');
+    const errEl=document.getElementById('err');
+    if(!PERGA_LIVE){ state.serverRef=null; state.step=5; render(); return; }
+    const original=btn?btn.textContent:'';
+    if(btn){ btn.disabled=true; btn.setAttribute('aria-busy','true'); btn.textContent='Reserving…'; }
+    try{
+      const res=await fetch(window.PERGA_CONFIG.endpoint,{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(buildOrder())
+      });
+      let data={}; try{ data=await res.json(); }catch(e){}
+      if(!res.ok || data.ok===false) throw new Error(data.error||('We could not complete your reservation right now. Please try again.'));
+      if(data.checkoutUrl){ location.assign(data.checkoutUrl); return; }
+      state.serverRef=data.reservationId||null;
+      state.step=5; render(); return;
+    }catch(err){
+      if(errEl){ errEl.textContent=(err&&err.message)?err.message:'Something went wrong. Please try again.';
+                 errEl.classList.add('show'); errEl.focus&&errEl.focus(); }
+      if(btn){ btn.disabled=false; btn.removeAttribute('aria-busy'); btn.textContent=original; }
+    }
   }
 
   // reveal — plain scroll sweep. Never let content depend on IntersectionObserver:
