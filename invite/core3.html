@@ -420,7 +420,8 @@ body.sub .subpage{display:block}
 .steps i{height:4px;flex:1;border-radius:2px;background:var(--mist)}
 .steps i.on{background:var(--teal)}
 .steps i.dn{background:var(--blue)}
-.pr-body{flex:1;overflow-y:auto;padding:20px 24px 24px;display:flex;flex-direction:column;gap:18px}
+.pr-body{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px 24px 24px;display:flex;flex-direction:column;gap:18px}
+.pr-body>*{flex:0 0 auto}
 .pr-body h3{color:var(--blue);font-size:26px}
 .pr-body .hint{font-size:14.5px;color:var(--ink-3)}
 .opt{display:flex;gap:14px;align-items:center;border:1.5px solid var(--line);border-radius:var(--r-s);padding:14px 16px;cursor:pointer;transition:border-color .2s,background .2s,transform .2s;background:#fff;text-align:left;width:100%;font:inherit;color:inherit}
