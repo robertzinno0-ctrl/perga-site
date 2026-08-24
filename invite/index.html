@@ -435,6 +435,7 @@ body.sub .subpage{display:block}
 .opt.dis{opacity:.45;pointer-events:none}
 .opt .mini{display:flex;gap:4px}
 .opt .mini img{height:34px;width:auto}
+.opt .ob .tagpop{display:inline-block;margin-bottom:5px;font-family:var(--body);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;color:#fff;background:#35787C;padding:4px 9px;border-radius:999px;line-height:1.2}
 .opts{display:grid;gap:10px}
 .summary{border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 .summary .sh{background:var(--mist);padding:16px 18px;display:flex;justify-content:space-between;align-items:center}
@@ -1035,7 +1036,7 @@ html[data-motion="off"]{scroll-behavior:auto}
   const ov=document.getElementById('ov'),panel=document.getElementById('panel'),body=document.getElementById('body'),foot=document.getElementById('foot'),stepsEl=document.getElementById('steps');
   function open(sys){
     if(sys){state.sys=sys;state.proto="F";state.step=(sys==='core3'||sys==='core4')?1:2;}
-    else{state.step=0;}
+    else{state.step=0;if(!state.sys)state.sys='core4';}
     ov.classList.add('open');panel.classList.add('open');document.body.style.overflow='hidden';render();mOpen(panel);
   }
   function close(){if(!panel.classList.contains('open'))return;ov.classList.remove('open');panel.classList.remove('open');document.body.style.overflow='';mClose();}
@@ -1058,10 +1059,10 @@ html[data-motion="off"]{scroll-behavior:auto}
     const s=state.sys&&SYSTEMS[state.sys];
     if(state.step===0){
       h+='<h3>Choose your Core system</h3><p class="hint">Everyone’s health, lifestyle, sensitivities, and budget are different. Pick the combination that fits you.</p><div class="opts">';
-      [['core2','Core2','Two products · CoreBlue + CoreRed','$109'],['core3','Core3','Three of the four · choose which to leave out','From $129'],['core4','Core4','All four · recommended for most adults','$159']].forEach(o=>{
+      [['core4','Core4','All four · the complete PERGA foundation','$159','Most popular'],['core3','Core3','Three of the four · choose which to leave out','From $129'],['core2','Core2','Two products · CoreBlue + CoreRed','$109']].forEach(o=>{
         const sel=(o[0]==='core3'?(state.sys||'').startsWith('core3'):state.sys===o[0]);
         const items=o[0]==='core3'?['flow','blue','green','red']:SYSTEMS[o[0]].items;
-        h+='<button class="opt'+(sel?' sel':'')+'" data-pick="'+o[0]+'"><span class="radio"></span><span class="ob"><b>'+o[1]+'</b><span>'+o[2]+'</span></span>'+'<span class="op">'+o[3]+'<small>per month</small></span></button>';
+        h+='<button class="opt'+(sel?' sel':'')+'" aria-pressed="'+(sel?'true':'false')+'" data-pick="'+o[0]+'"><span class="radio"></span><span class="ob">'+(o[4]?'<span class="tagpop">'+o[4]+'</span>':'')+'<b>'+o[1]+'</b><span>'+o[2]+'</span></span>'+'<span class="op">'+o[3]+'<small>per month</small></span></button>';
       });
       h+='</div>';
       f='<button class="btn btn-primary" id="next" '+(state.sys?'':'disabled style="opacity:.5"')+'>Continue</button>';
@@ -1075,7 +1076,7 @@ html[data-motion="off"]{scroll-behavior:auto}
     else if(state.step===1){
       h+='<h3>Which product would you like to leave out?</h3><p class="hint">Every Core3 option is available at all three protocol levels.</p><div class="opts">';
       [['core3nf','Without CoreFlow'],['core3ng','Without CoreGreen'],['core3nr','Without CoreRed · shellfish-free'],['core3nb','Without CoreBlue']].forEach(o=>{
-        const S=SYSTEMS[o[0]];h+='<button class="opt'+(state.sys===o[0]?' sel':'')+'" data-pick="'+o[0]+'"><span class="radio"></span><span class="ob"><b>'+o[1]+'</b><span>'+S.tag+'</span></span>'+'<span class="op">'+money(S.price.F)+'<small>per month</small></span></button>';
+        const S=SYSTEMS[o[0]];h+='<button class="opt'+(state.sys===o[0]?' sel':'')+'" aria-pressed="'+(state.sys===o[0]?'true':'false')+'" data-pick="'+o[0]+'"><span class="radio"></span><span class="ob"><b>'+o[1]+'</b><span>'+S.tag+'</span></span>'+'<span class="op">'+money(S.price.F)+'<small>per month</small></span></button>';
       });
       h+='</div><p class="hint">Allergy notice: CoreRed contains crustacean shellfish from Antarctic krill.</p>';
       f='<button class="btn btn-ghost back" id="back">Back</button><button class="btn btn-primary" id="next" '+(state.sys&&state.sys.startsWith('core3')&&state.sys!=='core3'?'':'disabled style="opacity:.5"')+'>Continue</button>';
@@ -1085,7 +1086,7 @@ html[data-motion="off"]{scroll-behavior:auto}
       ['F','O','L'].forEach(k=>{
         const P=PROTO[k],price=s.price[k],dis=price==null;
         const d=quantities(state.sys,k).map(q=>q.daily+' '+q.p.name).join(' · ');
-        h+='<button class="opt'+(state.proto===k?' sel':'')+(dis?' dis':'')+'" data-proto="'+k+'"><span class="radio"></span><span class="ob"><b>'+P.name+'</b><span>'+P.sub+'</span><span style="margin-top:4px;color:var(--blue)">'+d+' daily</span></span><span class="op">'+(dis?'—':money(price))+'<small>'+(dis?'Foundation only':'per month')+'</small></span></button>';
+        h+='<button class="opt'+(state.proto===k?' sel':'')+(dis?' dis':'')+'" aria-pressed="'+(state.proto===k?'true':'false')+'"'+(dis?' aria-disabled="true"':'')+' data-proto="'+k+'"><span class="radio"></span><span class="ob"><b>'+P.name+'</b><span>'+P.sub+'</span><span style="margin-top:4px;color:var(--blue)">'+d+' daily</span></span><span class="op">'+(dis?'—':money(price))+'<small>'+(dis?'Foundation only':'per month')+'</small></span></button>';
       });
       h+='</div>';
       if(state.sys==='core2')h+='<p class="hint">Core2 is offered at the Foundation level. Choose Core3 or Core4 to unlock Optimization and Longevity.</p>';
