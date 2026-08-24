@@ -446,6 +446,9 @@ body.sub .subpage{display:block}
 .opt .mini{display:flex;gap:4px}
 .opt .mini img{height:34px;width:auto}
 .opt .ob .tagpop{display:inline-block;margin-bottom:5px;font-family:var(--body);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;color:#fff;background:#35787C;padding:4px 9px;border-radius:999px;line-height:1.2}
+.fmnote{display:flex;align-items:center;gap:7px;margin:7px 0 0;font-size:13.5px;color:var(--teal-text)}
+.fmnote svg{width:15px;height:15px;flex:none}
+.field input[readonly]{background:var(--mist-2);color:var(--ink-2);cursor:default}
 .opts{display:grid;gap:10px}
 .summary{border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 .summary .sh{background:var(--mist);padding:16px 18px;display:flex;justify-content:space-between;align-items:center}
@@ -624,6 +627,28 @@ html[data-motion="off"]{scroll-behavior:auto}
   const DAYS=28;
   const state={sys:null,proto:"F",step:0,form:{}};
 
+  // --- Founding Member referral capture ---
+  // Link format: /invite/?ref=CODE  (opaque member code; backend resolves it)
+  const PERGA_REF=(function(){
+    const KEY='perga-ref';
+    let v=null;
+    try{
+      const q=new URLSearchParams(location.search).get('ref');
+      if(q) v=q.trim().toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,32);
+    }catch(e){}
+    if(v){ try{ sessionStorage.setItem(KEY,v); }catch(e){} return v; }
+    try{ return sessionStorage.getItem(KEY)||null; }catch(e){ return null; }
+  })();
+  window.PERGA_REF=PERGA_REF;
+  // keep the code attached when moving between index and the Core3 page
+  if(PERGA_REF){
+    document.querySelectorAll('a[href$="core3.html"],a[href^="index.html"],a[href="index.html"]').forEach(a=>{
+      try{ const u=new URL(a.getAttribute('href'),location.href);
+           if(!u.searchParams.get('ref')){ u.searchParams.set('ref',PERGA_REF);
+             a.setAttribute('href',u.pathname+u.search+u.hash); } }catch(e){}
+    });
+  }
+
   // --- a11y: modal focus management ---
   const FOCUSABLE='a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
   let _mReturn=null,_mEl=null;
@@ -724,7 +749,7 @@ html[data-motion="off"]{scroll-behavior:auto}
         '<div class="field"><label for="ph">Phone</label><input id="ph" name="ph" type="tel" autocomplete="tel"></div>'+
         '<div class="field"><label for="ad">Shipping address</label><input id="ad" name="ad" autocomplete="street-address" required></div>'+
         '<div class="row"><div class="field"><label for="ci">City</label><input id="ci" name="ci" autocomplete="address-level2" required></div><div class="field"><label for="st">State / ZIP</label><input id="st" name="st" autocomplete="postal-code" required></div></div>'+
-        '<div class="field"><label for="fm">Founding Member who invited you (optional)</label><input id="fm" name="fm" autocomplete="off"></div>'+
+        (PERGA_REF ? '<div class="field"><label for="fm">Founding Member who invited you</label><input id="fm" name="fm" autocomplete="off" readonly value="'+PERGA_REF+'" aria-describedby="fmnote"><p class="fmnote" id="fmnote"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Invitation confirmed</p></div>' : '<div class="field"><label for="fm">Founding Member who invited you (optional)</label><input id="fm" name="fm" autocomplete="off"></div>')+
         '<h4>Payment</h4>'+
         '<div class="field"><label for="cc">Card number</label><input id="cc" name="cc" inputmode="numeric" autocomplete="off" placeholder="•••• •••• •••• ••••" required></div>'+
         '<div class="row"><div class="field"><label for="ex">Expiry</label><input id="ex" name="ex" placeholder="MM / YY" autocomplete="off" required></div><div class="field"><label for="cv">CVC</label><input id="cv" name="cv" inputmode="numeric" autocomplete="off" placeholder="•••" required></div></div>'+
@@ -734,7 +759,7 @@ html[data-motion="off"]{scroll-behavior:auto}
       f='<div style="flex:1;display:flex;flex-direction:column;gap:8px"><button class="btn btn-primary" id="next">Reserve · '+money(price)+'</button><span class="fine">Your payment is processed when your reservation is placed. Shipping is scheduled to begin September 1.</span></div>';
     }
     else if(state.step===5){
-      const ref='PG-'+(1000+Math.floor(Math.random()*9000));window.PERGA_ORDER={reservation:ref,system:state.sys,protocol:state.proto,customerSku:s.sku[state.proto],price:s.price[state.proto],customer:Object.fromEntries(Object.entries(state.form).filter(([k])=>!['cc','ex','cv'].includes(k)))};
+      const ref='PG-'+(1000+Math.floor(Math.random()*9000));window.PERGA_ORDER={reservation:ref,referralCode:PERGA_REF||null,system:state.sys,protocol:state.proto,customerSku:s.sku[state.proto],price:s.price[state.proto],customer:Object.fromEntries(Object.entries(state.form).filter(([k])=>!['cc','ex','cv'].includes(k)))};
       h+='<div class="done" data-sku="'+s.sku[state.proto]+'"><div class="seal">'+svgCheck+'</div><h3>You’re Officially on the List!</h3><p>Your PERGA customer reservation has been received. Your order is scheduled to begin shipping September 1, based on the order in which reservations were received.</p><p>Watch your email for order updates, education, and instructions for getting the most from your Core system.</p><div class="ref">Reservation <b>'+ref+'</b> · '+s.name+' · '+PROTO[state.proto].name+'</div></div>';
       f='<button class="btn btn-primary" id="done">Back to PERGA</button>';
     }
