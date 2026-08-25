@@ -869,6 +869,17 @@ section{scroll-margin-top:88px}
 .hero .dots{z-index:2;opacity:.35}
 .px-photo-wrap{will-change:transform}
 
+/* ---- testimonials: real quotes, no invented ratings ---- */
+.px-rev-head{align-items:flex-end}
+.px-rev-note{font-size:13.5px;line-height:1.6;color:var(--ink-3);text-align:right;max-width:34ch}
+@media(max-width:760px){.px-rev-note{text-align:left}}
+.px-tag{display:inline-block;align-self:flex-start;font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;font-weight:600;color:var(--teal-text);
+  padding:5px 10px;border-radius:999px;background:rgba(62,142,147,.12)}
+.px-rev .q{margin-top:2px}
+.px-legal{margin-top:34px;padding-top:22px;border-top:1px solid var(--line);
+  font-size:12.5px;line-height:1.7;color:var(--ink-3);max-width:96ch}
+
 </style>
 </head>
 <body>
@@ -1128,32 +1139,23 @@ section{scroll-margin-top:88px}
   </div>
 </section>
 
-<section class="px-reviews px-ph" aria-label="Customer reviews">
+<section class="px-reviews" id="reviews" aria-label="What customers say">
   <div class="wrap">
-    <span class="px-ph-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg> Placeholder — replace with real reviews before launch</span>
     <div class="px-rev-head">
       <div>
         <span class="eyebrow">What customers say</span>
-        <h2 style="margin-top:.5rem">Real Results, In Their Words</h2>
+        <h2 style="margin-top:.5rem">In Their Own Words</h2>
       </div>
-      <div class="px-rating">
-        <span class="px-stars"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg></span>
-        <span class="sc">0.0</span>
-        <span class="ct">from 0 verified reviews<br>— awaiting real data —</span>
-      </div>
+      <p class="px-rev-note">Shared unprompted by people already on the Core4.<br>Shortened for length — nothing added.</p>
     </div>
     <div class="px-rev-grid">
-      <div class="px-rev rv"><div class="px-stars"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg></div><p class="q">Placeholder pull quote — the one line this customer would say out loud.</p><p class="b">Placeholder body copy. Two to three sentences describing what changed, in the customer’s own words. Replace this entire card with a real, verifiable review.</p><div class="w"><span class="av">AB</span><span><span class="nm">Placeholder name</span><span class="mt">Core4 · Foundation · placeholder</span></span></div></div>
-      <div class="px-rev rv"><div class="px-stars"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg></div><p class="q">Placeholder pull quote — a second, different angle.</p><p class="b">Placeholder body copy. Use a review that speaks to a different product or a different problem than the first card, so the three together cover more ground.</p><div class="w"><span class="av">CD</span><span><span class="nm">Placeholder name</span><span class="mt">Core3 · Optimization · placeholder</span></span></div></div>
-      <div class="px-rev rv"><div class="px-stars"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg></div><p class="q">Placeholder pull quote — the skeptic who was convinced.</p><p class="b">Placeholder body copy. The strongest third card is usually someone who did not expect it to work. Replace with real content.</p><div class="w"><span class="av">EF</span><span><span class="nm">Placeholder name</span><span class="mt">Core4 · Longevity · placeholder</span></span></div></div>
+      <div class="px-rev rv"><span class="px-tag">Energy</span><p class="q">“I always need a nap at 2pm.”</p><p class="b">It’s 7pm. I got 10k steps in today, a workout, and I’m NOT TIRED.</p><div class="w"><span class="av">MF</span><span><span class="nm">Mike F.</span><span class="mt">PERGA community</span></span></div></div>
+      <div class="px-rev rv"><span class="px-tag">Sleep</span><p class="q">“Energy that carries me throughout the day, no more midday crash.”</p><p class="b">I sleep so much better and stay asleep throughout the night. I wake up feeling so refreshed.</p><div class="w"><span class="av">KS</span><span><span class="nm">Kendra S.</span><span class="mt">PERGA community</span></span></div></div>
+      <div class="px-rev rv"><span class="px-tag">Digestion</span><p class="q">“I used to struggle with slow digestion.”</p><p class="b">Now it’s a lot more regular, especially after taking the CoreFlow.</p><div class="w"><span class="av">AJ</span><span><span class="nm">Allie J.</span><span class="mt">PERGA community</span></span></div></div>
+      <div class="px-rev rv"><span class="px-tag">Focus</span><p class="q">“Better concentration and mental clarity, decreased brain fog.”</p><p class="b">No more afternoon crash, only 1 coffee a day, better mood.</p><div class="w"><span class="av">TN</span><span><span class="nm">Traci N.</span><span class="mt">PERGA community</span></span></div></div>
+      <div class="px-rev rv"><span class="px-tag">Sleep</span><p class="q">“More energy, sleep better — which is HUGE, as I am terrible with sleep.”</p><p class="b">Maybe a good 3–4 hours before. Brain fog is almost gone, tummy is getting better.</p><div class="w"><span class="av">DR</span><span><span class="nm">Debbie R.</span><span class="mt">PERGA community</span></span></div></div>
     </div>
-    <div class="px-press">
-      <span class="l">As seen in —</span>
-      <span class="l">Publication</span><span class="l">Publication</span>
-      <span class="l">Publication</span><span class="l">Publication</span>
-    </div>
-    <p class="tbl-note" style="text-align:center;margin-top:18px">Every element in this section is scaffolding.
-      Nothing here is a real review, rating, or press mention.</p>
+    <p class="px-legal">These are the individual experiences of people who shared them in PERGA’s customer and distributor community, and are not typical or guaranteed results. Individual results will vary. Contributors may be PERGA distributors who receive compensation. Testimonials have been shortened for length; wording is otherwise unchanged. These statements have not been evaluated by the Food and Drug Administration. PERGA products are not intended to diagnose, treat, cure or prevent any disease.</p>
   </div>
 </section>
 
