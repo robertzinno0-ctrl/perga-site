@@ -930,6 +930,36 @@ html[data-motion="off"] .px-rev::before{background:var(--teal-soft);opacity:.6}
 /* a11y: the Core4 pillar tag was teal-soft on a lightened blue card — 3.78:1, below AA */
 .p4-tag{color:#8FD3D8}      /* 5.79:1 on the .p4 card ground */
 
+/* ---- Core4 routine line + timing note (replaces the old 4 / 2AM·2PM / 90 strip) ---- */
+.intro-foot{padding-bottom:0}
+.routine-note{margin-top:20px;display:flex;flex-direction:column;gap:12px}
+.routine-line{font-family:var(--display);font-size:clamp(21px,2.4vw,32px);line-height:1.22;
+  letter-spacing:-.02em;color:#fff;max-width:26ch;text-wrap:balance}
+.routine-body{font-size:16.5px;line-height:1.62;color:rgba(225,234,233,.86);max-width:72ch}
+
+/* ---- "how to buy" line (replaces the 4 / 40% / 7 / 30-day stat band) ---- */
+/* the old stat band left a 4-column grid on .wrap — reset it for the single line */
+.px-stats .wrap{display:block}
+.px-buyline{font-family:var(--display);font-size:clamp(20px,2.3vw,31px);line-height:1.32;
+  letter-spacing:-.02em;color:var(--blue);text-align:center;max-width:46ch;margin:0 auto;
+  text-wrap:balance}
+
+/* ---- 90-day timeline: label directly over number, identical in all three ---- */
+/* Label+number live in their own .tl-when block so a longer description can never
+   stretch the space between them (that was the 900px inconsistency). */
+.timeline{grid-template-columns:1fr;grid-auto-rows:1fr;gap:10px;margin-top:14px}
+.tl{display:flex;align-items:flex-start;gap:20px;padding:16px 20px}
+.tl .tl-when{flex:0 0 150px;display:flex;flex-direction:column;gap:3px}
+.tl .tl-lab{font-family:var(--body);font-size:11.5px;letter-spacing:.17em;text-transform:uppercase;
+  font-weight:600;color:var(--teal-text);line-height:1}
+.tl .tl-num{font-family:var(--display);font-weight:400;font-size:22px;line-height:1.1;
+  letter-spacing:-.02em;color:var(--blue);white-space:nowrap}
+.tl .tl-txt{flex:1;font-size:14.5px;line-height:1.55;color:var(--ink-2)}
+@media(max-width:560px){
+  .tl{flex-direction:column;gap:7px}
+  .tl .tl-when{flex:none}
+}
+
 </style>
 </head>
 <body>
@@ -1052,11 +1082,10 @@ html[data-motion="off"] .px-rev::before{background:var(--teal-soft);opacity:.6}
 
     <div class="intro-foot rv d3">
       <p class="etym-motto">Cleanse. Renew. Go Forward.</p>
-      <div class="foot-facts">
-        <span><b>4</b> foundational products</span>
-        <span><b>2 AM &#183; 2 PM</b> one simple routine</span>
-        <span><b>90</b> days to let your body adapt</span>
-      </div>
+    </div>
+    <div class="routine-note rv d3">
+      <p class="routine-line">Four foundational products. Two in the morning. Two at night. One simple routine.</p>
+      <p class="routine-body">CoreFlow and CoreBlue are designed to be taken in the morning, while CoreGreen and CoreRed are designed to be taken at night. But don&rsquo;t overcomplicate it. Consistency matters more than perfect timing. You can take all four products together or separate them in whatever way works best for your routine.</p>
     </div>
   </div>
 </section>
@@ -1084,7 +1113,7 @@ html[data-motion="off"] .px-rev::before{background:var(--teal-soft);opacity:.6}
     <div class="stack rv d1">
       <div class="prod-tag"><i style="background:#F2A83A"></i>CoreFlow &middot; AM</div>
       <h2>Your Gut Doesn&rsquo;t Need a Cleanse. It Needs Fuel.</h2>
-      <p class="pkick">One unflavored stick, once a day.</p>
+      <p class="pkick">One unflavored serving once daily.</p>
       <p class="measure" style="font-size:17.5px">Most gut products drop new bacteria in and hope they stick around. CoreFlow works the other way. It feeds the good bacteria you already have, so your gut supports its own production of butyrate &mdash; the fuel the lining of your gut actually runs on.</p>
       <div class="pcards">
         <div class="pcard"><b>Feeds what&rsquo;s already there</b><p>Probiotics add strangers to the mix. CoreFlow feeds the bacteria you&rsquo;ve had your whole life, which is the part most products skip entirely.</p></div>
@@ -1181,12 +1210,10 @@ html[data-motion="off"] .px-rev::before{background:var(--teal-soft);opacity:.6}
   </div>
 </section>
 
-<section class="px-stats" aria-label="PERGA by the numbers">
+<section class="px-stats" aria-label="How to buy the Core4">
   <div class="wrap">
-    <div class="px-stat rv"><span class="n" data-to="4">4</span><span class="k">Products.<br>One system.</span></div>
-    <div class="px-stat rv d1"><span class="n" data-to="40" data-suffix="%">40%</span><span class="k">Less than buying<br>à la carte</span></div>
-    <div class="px-stat rv d2"><span class="n" data-to="7">7</span><span class="k">Trademarked,<br>research-backed inputs</span></div>
-    <div class="px-stat rv d3"><span class="n" data-to="30" data-suffix="-day">30-day</span><span class="k">Satisfaction<br>guarantee</span></div>
+    <p class="px-buyline rv">Purchase the Core4 as a complete system for greater savings,
+      or choose individual products &agrave; la carte.</p>
   </div>
 </section>
 
@@ -1367,9 +1394,9 @@ html[data-motion="off"] .px-rev::before{background:var(--teal-soft);opacity:.6}
       <h2>Give Your Body Time to Adapt</h2>
       <p class="lead">Health is a journey, not a quick fix. We recommend using your selected Core system consistently for at least 90 days to give your body time to adapt and experience the full benefits of the routine.</p>
       <div class="timeline">
-        <div class="tl"><b>Days 1–14</b><span>Settle into the routine. Start low on tablets if you prefer.</span></div>
-        <div class="tl"><b>Days 15–60</b><span>Build to the full serving. Stay consistent.</span></div>
-        <div class="tl"><b>Day 90</b><span>Your first real checkpoint on the routine.</span></div>
+        <div class="tl"><span class="tl-when"><span class="tl-lab">Days</span><span class="tl-num">1 through 14</span></span><span class="tl-txt">Settle into the routine. Start low on tablets if you prefer.</span></div>
+        <div class="tl"><span class="tl-when"><span class="tl-lab">Days</span><span class="tl-num">15 through 60</span></span><span class="tl-txt">Build to the full serving. Stay consistent.</span></div>
+        <div class="tl"><span class="tl-when"><span class="tl-lab">Day</span><span class="tl-num">90</span></span><span class="tl-txt">Your first real checkpoint on the routine.</span></div>
       </div>
     </div>
     <div class="faqish rv d2">
