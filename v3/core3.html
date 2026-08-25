@@ -639,16 +639,18 @@ html[data-motion="off"]{scroll-behavior:auto}
     red:  {id:"corered",  name:"CoreRed",   price:60, tag:"PM \u00b7 Mobility &amp; recovery",fmt:"28 softgels \u00b7 1 daily"}
   };
   const ALC_KEYS=["flow","blue","green","red"];
-  // Shipping on à-la-carte orders. Set BOTH numbers to switch the threshold on.
-  // Left null, the panel says "calculated at checkout" and never asserts a price we don't have.
-  const SHIP={freeOver:null, flat:null};
+  // Shipping on à-la-carte orders. freeOver set by Bo 2026-08-25: free over $100.
+  // `flat` is the under-threshold rate and is still unknown — while it is null the panel
+  // says "calculated at checkout" rather than asserting a number we do not have.
+  const SHIP={freeOver:100, flat:null};
   function alcCount(){return ALC_KEYS.reduce((n,k)=>n+state.qty[k],0);}
   function alcTotal(){return ALC_KEYS.reduce((n,k)=>n+state.qty[k]*SINGLES[k].price,0);}
   function alcShipLine(){
-    if(SHIP.freeOver===null||SHIP.flat===null) return "Shipping calculated at checkout.";
-    return alcTotal()>=SHIP.freeOver
-      ? "Free shipping on this order."
-      : "Shipping "+money(SHIP.flat)+" \u2014 free on orders over "+money(SHIP.freeOver)+".";
+    if(SHIP.freeOver===null) return "Shipping calculated at checkout.";
+    if(alcTotal()>=SHIP.freeOver) return "Free shipping on this order.";
+    const gap=SHIP.freeOver-alcTotal();
+    return (SHIP.flat===null ? "Shipping calculated at checkout. " : "Shipping "+money(SHIP.flat)+". ")
+      +"Add "+money(gap)+" for free shipping.";
   }
   function alcLines(){
     return ALC_KEYS.filter(k=>state.qty[k]>0).map(k=>({key:k,p:SINGLES[k],qty:state.qty[k]}));
