@@ -880,6 +880,45 @@ section{scroll-margin-top:88px}
 .px-legal{margin-top:34px;padding-top:22px;border-top:1px solid var(--line);
   font-size:12.5px;line-height:1.7;color:var(--ink-3);max-width:96ch}
 
+/* ---- testimonials: dark ground + a light that runs around each card ---- */
+.px-reviews{background:var(--blue);position:relative;overflow:hidden}
+.px-reviews h2{color:#fff}
+.px-reviews .px-rev-note{color:rgba(225,234,233,.78)}
+.px-reviews .px-legal{color:rgba(225,234,233,.68);border-top-color:var(--line-mist)}
+
+.px-rev{position:relative;isolation:isolate;overflow:hidden;background:transparent;border:0;
+  box-shadow:0 24px 60px rgba(0,0,0,.32), 0 0 46px rgba(62,142,147,.20)}
+/* the running light: an oversized conic gradient spinning behind the card, */
+/* with an inset white plate on top of it so only a 2px rim shows through   */
+.px-rev::before{
+  content:"";position:absolute;left:50%;top:50%;width:230%;aspect-ratio:1;z-index:-2;
+  transform:translate(-50%,-50%) rotate(0deg);
+  background:conic-gradient(from 0deg,
+    rgba(106,172,176,.30)  0%,
+    rgba(106,172,176,.30) 44%,
+    rgba(143,211,216,.75) 58%,
+    #B8ECEF              66%,
+    #FFFFFF              70%,
+    #B8ECEF              74%,
+    rgba(143,211,216,.75) 82%,
+    rgba(106,172,176,.30) 94%,
+    rgba(106,172,176,.30)100%);
+  filter:blur(.4px);
+  animation:pxRing 7s linear infinite;
+}
+.px-rev::after{content:"";position:absolute;inset:3px;border-radius:calc(var(--r) - 3px);
+  background:#fff;z-index:-1}
+@keyframes pxRing{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.px-rev:nth-child(2)::before{animation-delay:-1.4s}
+.px-rev:nth-child(3)::before{animation-delay:-2.8s}
+.px-rev:nth-child(4)::before{animation-delay:-4.2s}
+.px-rev:nth-child(5)::before{animation-delay:-5.6s}
+.px-rev:hover{transform:translateY(-6px);box-shadow:0 34px 80px rgba(0,0,0,.42), 0 0 64px rgba(62,142,147,.34)}
+.px-rev:hover::before{animation-duration:3s}
+/* motion off / reduced motion: the ring becomes a clean static rim */
+html[data-motion="off"] .px-rev::before{background:var(--teal-soft);opacity:.6}
+@media(prefers-reduced-motion:reduce){.px-rev::before{background:var(--teal-soft);opacity:.6}}
+
 </style>
 </head>
 <body>
@@ -1139,7 +1178,7 @@ section{scroll-margin-top:88px}
   </div>
 </section>
 
-<section class="px-reviews" id="reviews" aria-label="What customers say">
+<section class="px-reviews on-blue" id="reviews" aria-label="What customers say">
   <div class="wrap">
     <div class="px-rev-head">
       <div>
